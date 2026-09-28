@@ -40,6 +40,38 @@ The next decision is to define one specific user, a real deployment/operations p
 
 ## Proposed first slice
 
+### Candidate workflow — not implemented
+
+```mermaid
+flowchart LR
+    A[Developer submits source] --> B[Local control plane]
+    B --> C[Build and trusted tests]
+    C -->|pass| D[Container artifact]
+    C -->|fail| X[Failure evidence]
+    D --> E[Local release]
+    E --> F[Health, logs and metrics]
+    F --> G{Healthy?}
+    G -->|yes| H[Release evidence]
+    G -->|no| I[Rollback exercise]
+    I --> H
+```
+
+### Candidate technical architecture — not implemented
+
+```mermaid
+flowchart TB
+    Dev[Developer] --> UI[Web or CLI interface — undecided]
+    UI --> CP[Control plane — language undecided]
+    CP --> DB[(Release metadata and evidence — PostgreSQL candidate)]
+    CP --> Runner[Local build and test runner]
+    Runner --> Docker[Docker release target]
+    Docker --> Obs[Health, logs and metrics — tooling undecided]
+    Obs --> CP
+    CP --> UI
+```
+
+The diagrams are a **design hypothesis**, not a description of running services. TypeScript, Go/Python, PostgreSQL, Docker and open-source observability are candidates only; the product brief and first acceptance test will determine the actual stack.
+
 This is a **candidate scope**, not a committed feature list. A small first release could take one example API through a local lifecycle:
 
 ```text
